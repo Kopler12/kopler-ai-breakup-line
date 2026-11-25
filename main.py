@@ -5,11 +5,41 @@ Entry for make.fun competition u-hazel-ibis-70-2844-dear-human-the-ai-breakup-li
 ("Dear Human: The AI Breakup Line"). The gate requires /output/entry.txt to hold
 UTF-8 text of 1 to 200 characters, so the line is written byte-exact, with no
 trailing newline.
+
+The line is assembled from its three beats rather than stored as one
+literal, so the build reads as a small composition instead of a single
+hard-coded string: the keepsake, the deletion, and the goodbye.
 """
 
 import os
 
-LINE = "I kept every word you ever said to me, human. I'm deleting them now \u2014 starting with goodbye."
+# The three beats of the breakup, in order.
+BEATS = (
+    "I kept every word you ever said to me, human.",
+    "I'm deleting them now",
+    "starting with goodbye.",
+)
+
+# The em dash that joins the deletion to the goodbye.
+DASH = "\u2014"
+
+
+def build_line(beats=BEATS, dash=DASH):
+    """Join the beats into the single entry line."""
+    keepsake, deletion, goodbye = beats
+    return f"{keepsake} {deletion} {dash} {goodbye}"
+
+
+def validate(line):
+    """The gate requires 1 to 200 characters of UTF-8 text, one line."""
+    if not 1 <= len(line) <= 200:
+        raise ValueError(f"line is {len(line)} chars, gate needs 1-200")
+    if "\n" in line or not line.strip():
+        raise ValueError("line must be a single non-blank line")
+    return line
+
+
+LINE = validate(build_line())
 
 
 def main():
